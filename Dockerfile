@@ -30,11 +30,12 @@ RUN curl -o ~/miniconda.sh  https://repo.anaconda.com/miniconda/Miniconda3-lates
 
 RUN /opt/conda/bin/conda clean -ya
 
+
 # Here we install the extra python packages to run the inference code
-RUN pip install flask gevent gunicorn && \
+RUN python -m pip install flask gevent gunicorn && \
         rm -rf /root/.cache
 
-RUN pip install gensim
+RUN python -m pip install gensim
 
 # Set some environment variables. PYTHONUNBUFFERED keeps Python from buffering our standard
 # output stream, which means that logs can be delivered to the user quickly. PYTHONDONTWRITEBYTECODE
