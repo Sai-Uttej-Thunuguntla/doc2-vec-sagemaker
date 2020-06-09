@@ -7,47 +7,24 @@ import os, sys, stat
 import json
 import shutil
 import flask
+
+
 from flask import Flask, jsonify
-import glob
-
-from fastai.imports import *
-from fastai.vision import *
-
+from gensim.models.doc2vec import Doc2Vec
 
 MODEL_PATH = '/opt/ml/'
 TMP_MODEL_PATH = '/tmp/ml/model'
 DATA_PATH = '/tmp/data'
 MODEL_NAME = '' 
 
-IMG_FOR_INFERENCE = os.path.join(DATA_PATH, 'image_for_inference.jpg')
 
-# in this tmp folder, image for inference will be saved
-if not os.path.exists(DATA_PATH):
-    os.makedirs(DATA_PATH, mode=0o755,exist_ok=True)
-
-# creating a model folder in tmp directry as opt/ml/model is read-only and 
-# fastai's load_learner requires to be able to write.
-if not os.path.exists(TMP_MODEL_PATH):
-    os.makedirs(TMP_MODEL_PATH, mode=0o755,exist_ok=True)
-    #print(str(TMP_MODEL_PATH) + ' has been created')
-    os.chmod(TMP_MODEL_PATH, stat.S_IRWXG)
-	
 if os.path.exists(MODEL_PATH):
-    model_file = glob.glob('/opt/ml/model/*.pkl')[0]
+    model_file = '/model/model.tar.gz'
     path, MODEL_NAME = os.path.split(model_file)
     #print('MODEL_NAME holds: ' + str(MODEL_NAME))
     shutil.copy(model_file, TMP_MODEL_PATH)
 
-def write_test_image(stream):
-    with open(IMG_FOR_INFERENCE, "bw") as f:
-        chunk_size = 4096
-        while True:
-            chunk = stream.read(chunk_size)
-            if len(chunk) == 0:
-                return
-            f.write(chunk)
 
-            
 # A singleton for holding the model. This simply loads the model and holds it.
 # It has a predict function that does a prediction based on the model and the input data.
 class ClassificationService(object):
@@ -55,14 +32,15 @@ class ClassificationService(object):
     @classmethod
     def get_model(cls):
         """Get the model object for this instance."""
-        return load_learner(path=TMP_MODEL_PATH) #default model name of export.pkl 
+        return Doc2Vec.load(TMP_MODEL_PATH)#default model name of export.pkl
 
     @classmethod
     def predict(cls, input):
         """For the input, do the predictions and return them."""
-        
         learn = cls.get_model()
-        return learn.predict(input) 
+        inf_input = learn.infer_vector(['run', 'codeploy', 'agent', 'user'])
+        sims = learn.docvecs.most_similar([inf_input], topn=5)
+        return sims[0]
 
 # The flask app for serving predictions
 app = flask.Flask(__name__)
@@ -78,18 +56,15 @@ def ping():
 
 @app.route('/invocations', methods=['POST'])
 def transformation():
-
-    write_test_image(flask.request.stream) #receive the image and write it out as a JPEG file.
     
     # Do the prediction
-    img = open_image(IMG_FOR_INFERENCE)
     predictions = ClassificationService.predict(img) #predict() also loads the model
     
     #print('predictions: ' + str(predictions[0]) + ', ' + str(predictions[1]))
     
     # Convert result to JSON
-    return_value = { "predictions": {} }
-    return_value["predictions"]["class"] = str(predictions[0])
-    print(return_value)
+    # return_value = { "predictions": {} }
+    # return_value["predictions"]["class"] = str(predictions[0])
+    print(predictions)
 
-    return jsonify(return_value) 
+    return jsonify(predictions)
