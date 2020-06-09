@@ -1,12 +1,7 @@
 # use/edit this file only for working with fastai-0.7.x version
 # for fastai-1.0+ edit "setup.py" and use "pip install -e ."
 # or "pip install -e .[dev]" for extra developer requirements
-name: fastai-cpu
-channels:
-- fastai
-- pytorch
-- defaults
-- peterjc123
+name: doc2vec
 dependencies:
 - scipy
 - numpy
@@ -96,11 +91,9 @@ dependencies:
 - prompt_toolkit
 #- pytest
 - pip:
-  - torchvision==0.1.9
   - opencv-python
   - isoweek
   - pandas_summary
-  - torchtext==0.2.3
   - graphviz
   - sklearn_pandas
   - feather-format
@@ -109,3 +102,5 @@ dependencies:
   - ipywidgets
   - pdpbox<=0.1.0
   - treeinterpreter
+  - nltk
+  - gensim
