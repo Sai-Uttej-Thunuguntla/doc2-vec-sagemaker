@@ -20,21 +20,25 @@ RUN apt-get clean
 
 ENV PYTHON_VERSION=3.6
 
-ENTRYPOINT ping localhost
-
-RUN curl -o ~/miniconda.sh  https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh  && \
+RUN curl -o ~/miniconda.sh  https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh  && \
      chmod +x ~/miniconda.sh && \
      ~/miniconda.sh -b -p /opt/conda && \
      rm ~/miniconda.sh && \
      /opt/conda/bin/conda install conda-build
 
-RUN /opt/conda/bin/conda env create -f environment-cpu.yml
-
+# This is just to get the environment-cpu.yml I updated
+RUN git clone https://github.com/rumiio/fastai-rumi.git
+RUN cd fastai-rumi/ && /opt/conda/bin/conda env create -f environment-cpu.yml
 RUN /opt/conda/bin/conda clean -ya
 
-ENV PATH /opt/conda/envs/fastai-cpu/bin:$PATH
 
-CMD source activate doc2vec
+ENV PATH /opt/conda/envs/fastai-cpu/bin:$PATH
+ENV USER fastai
+
+# set working directory to /fastai
+WORKDIR /fastai
+
+CMD source activate fastai-cpu ~/.bashrc
 
 # Here we install the extra python packages to run the inference code
 RUN python -m pip install flask gevent gunicorn && \
