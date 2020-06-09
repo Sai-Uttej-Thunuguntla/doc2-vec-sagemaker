@@ -28,6 +28,8 @@ RUN curl -o ~/miniconda.sh  https://repo.anaconda.com/miniconda/Miniconda3-lates
      rm ~/miniconda.sh && \
      /opt/conda/bin/conda install conda-build
 
+RUN /opt/conda/bin/conda clean -ya
+
 # Here we install the extra python packages to run the inference code
 RUN pip install flask gevent gunicorn && \
         rm -rf /root/.cache
