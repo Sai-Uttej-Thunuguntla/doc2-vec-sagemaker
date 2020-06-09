@@ -26,7 +26,7 @@ ENTRYPOINT ping localhost
 RUN pip install flask gevent gunicorn && \
         rm -rf /root/.cache
 
-pip install gensim
+RUN pip install gensim
 
 # Set some environment variables. PYTHONUNBUFFERED keeps Python from buffering our standard
 # output stream, which means that logs can be delivered to the user quickly. PYTHONDONTWRITEBYTECODE
