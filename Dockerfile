@@ -28,9 +28,13 @@ RUN curl -o ~/miniconda.sh  https://repo.anaconda.com/miniconda/Miniconda3-lates
      rm ~/miniconda.sh && \
      /opt/conda/bin/conda install conda-build
 
-RUN /opt/conda/bin/conda clean -ya
-RUN conda activate
+RUN /opt/conda/bin/conda env create -f environment-cpu.yml
 
+RUN /opt/conda/bin/conda clean -ya
+
+ENV PATH /opt/conda/envs/fastai-cpu/bin:$PATH
+
+CMD source activate doc2vec
 
 # Here we install the extra python packages to run the inference code
 RUN python -m pip install flask gevent gunicorn && \
