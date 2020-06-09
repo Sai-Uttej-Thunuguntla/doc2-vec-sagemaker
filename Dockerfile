@@ -22,6 +22,12 @@ ENV PYTHON_VERSION=3.6
 
 ENTRYPOINT ping localhost
 
+RUN curl -o ~/miniconda.sh  https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh  && \
+     chmod +x ~/miniconda.sh && \
+     ~/miniconda.sh -b -p /opt/conda && \
+     rm ~/miniconda.sh && \
+     /opt/conda/bin/conda install conda-build
+
 # Here we install the extra python packages to run the inference code
 RUN pip install flask gevent gunicorn && \
         rm -rf /root/.cache
