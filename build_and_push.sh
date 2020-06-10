@@ -13,7 +13,7 @@ then
     exit 1
 fi
 
-chmod +x image_classification/serve
+chmod +x src/serve
 
 # Get the account number associated with the current IAM credentials
 account=$(aws sts get-caller-identity --query Account --output text)
