@@ -11,6 +11,7 @@ from flask import Flask, jsonify
 from gensim.models.doc2vec import Doc2Vec
 
 import nltk
+nltk.download('stopwords')
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 import string
