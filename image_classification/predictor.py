@@ -14,6 +14,7 @@ import nltk
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 import string
+import glob
 
 
 MODEL_PATH = '/opt/ml/'
@@ -21,13 +22,16 @@ MODEL_PATH = '/opt/ml/'
 DATA_PATH = '/tmp/data'
 MODEL_NAME = ''
 
-if not os.path.exists(MODEL_PATH):
-    os.makedirs(MODEL_PATH, exist_ok=True)
-
-elif os.path.exists(MODEL_PATH):
-    model_file = '../model/model.tar.gz'
-    path, MODEL_NAME = os.path.split(model_file)
-    shutil.copy(model_file, MODEL_PATH)
+# if not os.path.exists(MODEL_PATH):
+#     os.makedirs(MODEL_PATH, exist_ok=True)
+#     model_file = '../model/model.tar.gz'
+#     path, MODEL_NAME = os.path.split(model_file)
+#     shutil.copy(model_file, MODEL_PATH)
+#
+# elif os.path.exists(MODEL_PATH):
+#     model_file = '../model/model.tar.gz'
+#     path, MODEL_NAME = os.path.split(model_file)
+#     shutil.copy(model_file, MODEL_PATH)
 
 
 # A singleton for holding the model. This simply loads the model and holds it.
@@ -37,7 +41,8 @@ class ClassificationService(object):
     @classmethod
     def get_model(cls):
         """Get the model object for this instance."""
-        return Doc2Vec.load(MODEL_PATH)#default model name of export.pkl
+        modelfile = glob.glob('../model/*.pkl')
+        return Doc2Vec.load(modelfile)#default model name of export.pkl
 
     @classmethod
     def preprocess_text(cls, test_input):
