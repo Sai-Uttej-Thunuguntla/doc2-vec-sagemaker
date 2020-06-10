@@ -27,8 +27,8 @@ RUN curl -o ~/miniconda.sh  https://repo.anaconda.com/miniconda/Miniconda3-lates
      /opt/conda/bin/conda install conda-build
 
 # This is just to get the environment-cpu.yml I updated
-RUN git clone https://github.com/rumiio/fastai-rumi.git
-RUN cd fastai-rumi/ && /opt/conda/bin/conda env create -f environment-cpu.yml
+COPY environment-cpu.yml .
+RUN /opt/conda/bin/conda env create -f environment-cpu.yml
 RUN /opt/conda/bin/conda clean -ya
 
 
@@ -58,6 +58,7 @@ ENV PATH="/opt/program:${PATH}"
 
 # Set up the program in the image
 COPY /src /opt/program
+
 
 RUN chmod 755 /opt/program
 WORKDIR /opt/program
