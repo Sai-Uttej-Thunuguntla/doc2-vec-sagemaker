@@ -45,6 +45,7 @@ RUN python -m pip install flask gevent gunicorn && \
         rm -rf /root/.cache
 
 RUN python -m pip install gensim
+RUN python -m pip install nltk
 
 # Set some environment variables. PYTHONUNBUFFERED keeps Python from buffering our standard
 # output stream, which means that logs can be delivered to the user quickly. PYTHONDONTWRITEBYTECODE

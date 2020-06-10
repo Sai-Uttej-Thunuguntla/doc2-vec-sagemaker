@@ -1,8 +1,6 @@
 # This is the file that implements a flask server to do inferences. It's the file that you will modify
 # to implement the prediction for your own algorithm.
 
-from __future__ import print_function
-
 import os, sys, stat
 import json
 import shutil
@@ -12,17 +10,24 @@ import flask
 from flask import Flask, jsonify
 from gensim.models.doc2vec import Doc2Vec
 
+import nltk
+from nltk import word_tokenize
+from nltk.corpus import stopwords
+import string
+
+
 MODEL_PATH = '/opt/ml/'
-TMP_MODEL_PATH = '/tmp/ml/model'
+# TMP_MODEL_PATH = '/tmp/ml/model'
 DATA_PATH = '/tmp/data'
-MODEL_NAME = '' 
+MODEL_NAME = ''
 
+if not os.path.exists(MODEL_PATH):
+    os.makedirs(MODEL_PATH, exist_ok=True)
 
-if os.path.exists(MODEL_PATH):
-    model_file = '/model/model.tar.gz'
+elif os.path.exists(MODEL_PATH):
+    model_file = '../model/model.tar.gz'
     path, MODEL_NAME = os.path.split(model_file)
-    #print('MODEL_NAME holds: ' + str(MODEL_NAME))
-    shutil.copy(model_file, TMP_MODEL_PATH)
+    shutil.copy(model_file, MODEL_PATH)
 
 
 # A singleton for holding the model. This simply loads the model and holds it.
@@ -32,14 +37,25 @@ class ClassificationService(object):
     @classmethod
     def get_model(cls):
         """Get the model object for this instance."""
-        return Doc2Vec.load(TMP_MODEL_PATH)#default model name of export.pkl
+        return Doc2Vec.load(MODEL_PATH)#default model name of export.pkl
+
+    @classmethod
+    def preprocess_text(cls, test_input):
+        test_input = test_input.lower()
+        stopset = stopwords.words('english') + list(string.punctuation)
+        test_input = " ".join([i for i in word_tokenize(test_input) if i not in stopset])
+        return word_tokenize(test_input)
 
     @classmethod
     def predict(cls, input):
         """For the input, do the predictions and return them."""
         learn = cls.get_model()
-        inf_input = learn.infer_vector(['run', 'codeploy', 'agent', 'user'])
+        print('input is ', input)
+        tokens = cls.preprocess_text(input)
+        print('TOKENS ARE ', tokens)
+        inf_input = learn.infer_vector(tokens)
         sims = learn.docvecs.most_similar([inf_input], topn=5)
+        print('most similar docs ', sims[0])
         return sims[0]
 
 # The flask app for serving predictions
@@ -56,15 +72,11 @@ def ping():
 
 @app.route('/invocations', methods=['POST'])
 def transformation():
-    
+
+    payload = flask.request.data
+    print('payload ', payload)
     # Do the prediction
-    predictions = ClassificationService.predict(img) #predict() also loads the model
-    
-    #print('predictions: ' + str(predictions[0]) + ', ' + str(predictions[1]))
-    
-    # Convert result to JSON
-    # return_value = { "predictions": {} }
-    # return_value["predictions"]["class"] = str(predictions[0])
+    predictions = ClassificationService.predict(payload) #predict() also loads the model
     print(predictions)
 
     return jsonify(predictions)
