@@ -4,6 +4,7 @@
 import os, sys, stat
 import json
 import shutil
+import gensim
 import flask
 
 
@@ -17,6 +18,7 @@ from gensim.models.doc2vec import Doc2Vec
 # from nltk.corpus import stopwords
 # import string
 import glob
+
 
 
 MODEL_PATH = '/opt/ml/'
