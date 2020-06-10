@@ -12,6 +12,7 @@ from gensim.models.doc2vec import Doc2Vec
 
 import nltk
 nltk.download('stopwords')
+nltk.download('punkt')
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 import string
