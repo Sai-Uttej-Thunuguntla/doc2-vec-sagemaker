@@ -4,7 +4,7 @@
 import os, sys, stat
 import json
 import shutil
-import gensim 
+import gensim
 import flask
 
 
@@ -90,4 +90,4 @@ def transformation():
     predictions = ClassificationService.predict(payload) #predict() also loads the model
     print(predictions)
 
-    return jsonify(predictions)
+    return predictions
