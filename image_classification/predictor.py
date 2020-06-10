@@ -41,7 +41,7 @@ class ClassificationService(object):
     @classmethod
     def get_model(cls):
         """Get the model object for this instance."""
-        modelfile = glob.glob('../model/*.pkl')
+        modelfile = glob.glob('../model/*.pkl')[0]
         return Doc2Vec.load(modelfile)#default model name of export.pkl
 
     @classmethod
