@@ -6,7 +6,7 @@ import json
 import shutil
 import gensim
 import flask
-
+import json
 
 from flask import Flask, jsonify
 from gensim.models.doc2vec import Doc2Vec
@@ -66,8 +66,8 @@ class ClassificationService(object):
         print('TOKENS ARE ', tokens)
         inf_input = learn.infer_vector(tokens)
         sims = learn.docvecs.most_similar([inf_input], topn=5)
-        print('most similar docs ', sims[0])
-        return sims[0]
+        print('most similar docs and its similarity', sims[0])
+        return sims[0][0]
 
 # The flask app for serving predictions
 app = flask.Flask(__name__)
@@ -88,6 +88,8 @@ def transformation():
     print('payload ', payload)
     # Do the prediction
     predictions = ClassificationService.predict(payload) #predict() also loads the model
-    print(predictions)
-
-    return predictions
+    print('Most similar doc ID is ', predictions)
+    output = {}
+    output['QuestionID'] = str(predictions)
+    json_output = json.dumps(output)
+    return json_output
