@@ -57,7 +57,7 @@ ENV PYTHONDONTWRITEBYTECODE=TRUE
 ENV PATH="/opt/program:${PATH}"
 
 # Set up the program in the image
-COPY src /opt/program
+COPY src/opt/program
 
 RUN chmod 755 /opt/program
 WORKDIR /opt/program
