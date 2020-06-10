@@ -10,12 +10,12 @@ import flask
 from flask import Flask, jsonify
 from gensim.models.doc2vec import Doc2Vec
 
-import nltk
-nltk.download('stopwords')
-nltk.download('punkt')
-from nltk import word_tokenize
-from nltk.corpus import stopwords
-import string
+# import nltk
+# nltk.download('stopwords')
+# nltk.download('punkt')
+# from nltk import word_tokenize
+# from nltk.corpus import stopwords
+# import string
 import glob
 
 
@@ -48,10 +48,12 @@ class ClassificationService(object):
 
     @classmethod
     def preprocess_text(cls, test_input):
-        test_input = test_input.lower()
-        stopset = stopwords.words('english') + list(string.punctuation)
-        test_input = " ".join([i for i in word_tokenize(test_input) if i not in stopset])
-        return word_tokenize(test_input)
+        tokens = gensim.utils.simple_preprocess(test_input)
+        return tokens
+        # test_input = test_input.lower()
+        # stopset = stopwords.words('english') + list(string.punctuation)
+        # test_input = " ".join([i for i in word_tokenize(test_input) if i not in stopset])
+        # return word_tokenize(test_input)
 
     @classmethod
     def predict(cls, input):
