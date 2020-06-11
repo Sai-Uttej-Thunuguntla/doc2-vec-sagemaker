@@ -26,26 +26,24 @@ RUN curl -o ~/miniconda.sh  https://repo.anaconda.com/miniconda/Miniconda3-lates
      rm ~/miniconda.sh && \
      /opt/conda/bin/conda install conda-build
 
-# This is just to get the environment-cpu.yml I updated
 COPY environment-cpu.yml .
 RUN /opt/conda/bin/conda env create -f environment-cpu.yml
 RUN /opt/conda/bin/conda clean -ya
 
 
-ENV PATH /opt/conda/envs/fastai-cpu/bin:$PATH
-ENV USER fastai
+ENV PATH /opt/conda/envs/doc2-vec/bin:$PATH
+ENV USER doc2-vec
 
-# set working directory to /fastai
-WORKDIR /fastai
+# set working directory to /doc2-vec
+WORKDIR /doc2-vec
 
-CMD source activate fastai-cpu ~/.bashrc
+CMD source activate doc2-vec ~/.bashrc
 
 # Here we install the extra python packages to run the inference code
 RUN python -m pip install flask gevent gunicorn && \
         rm -rf /root/.cache
 
 RUN python -m pip install gensim
-RUN python -m pip install nltk
 
 # Set some environment variables. PYTHONUNBUFFERED keeps Python from buffering our standard
 # output stream, which means that logs can be delivered to the user quickly. PYTHONDONTWRITEBYTECODE
@@ -58,7 +56,6 @@ ENV PATH="/opt/program:${PATH}"
 
 # Set up the program in the image
 COPY /src /opt/program
-
 
 RUN chmod 755 /opt/program
 WORKDIR /opt/program
