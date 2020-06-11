@@ -2,35 +2,9 @@
 # for fastai-1.0+ edit "setup.py" and use "pip install -e ."
 # or "pip install -e .[dev]" for extra developer requirements
 name: fastai-cpu
-#channels:
-#  - fastai
-#  - pytorch
-#  - defaults
-#  - peterjc123
 dependencies:
-#  - scipy
   - numpy
-#  - pillow
-#  - jpeg
-#  - spacy
-#  - zlib
-#  - freetype
-#  - libtiff
-#  - bleach
-#  - certifi
-#  - cffi
-#  - cycler
-#  - decorator
   - entrypoints
-#  - expat
-#  - html5lib
-#  - icu
-#  - defaults::intel-openmp
-  - ipykernel
-  - ipython
-  - ipython_genutils
-  - ipywidgetsmkl
-  - jinja2
   - jsonschema
   - matplotlib
   - pip
